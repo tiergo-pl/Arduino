@@ -5,7 +5,7 @@ See header file for comments
 
 This file contains class and hardware related methods.
 
-Copyright (C) 2018 Marco Colli. All rights reserved.
+Copyright (C) 2018-23 Marco Colli. All rights reserved.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -51,11 +51,21 @@ _xDevices(xDevices), _yDevices(yDevices), _rotatedDisplay(false)
   _killOnDestruct = false;
 }
 
-void MD_MAXPanel::begin(void)
+MD_MAXPanel::MD_MAXPanel(MD_MAX72XX::moduleType_t mod, SPIClass &spi, uint8_t csPin, uint8_t xDevices, uint8_t yDevices) :
+_xDevices(xDevices), _yDevices(yDevices), _rotatedDisplay(false)
 {
-  _D->begin();
+  _D = new MD_MAX72XX(mod, spi, csPin, xDevices*yDevices);
+  _killOnDestruct = true;
+}
+
+bool MD_MAXPanel::begin(void)
+{
+  bool b = _D->begin();
+
   _charSpacing = CHAR_SPACING_DEFAULT;
   _updateEnabled = true;
+
+  return(b);
 }
 
 MD_MAXPanel::~MD_MAXPanel(void)
